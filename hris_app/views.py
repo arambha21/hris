@@ -1,42 +1,13 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Employee
-from .forms import EmployeeForm
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import TemplateView
+from django.shortcuts import render
+from .models import Employee, Department
 
-class DashboardView(LoginRequiredMixin, TemplateView):
-    template_name = 'hris_app/dashboard.html'
+def home(request):
+    return render(request, 'hris_app/home.html')
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['total_employees'] = Employee.objects.count()
-        return context
+def employee_list(request):
+    employees = Employee.objects.all().select_related('position__department')
+    return render(request, 'hris_app/employee_list.html', {'employees': employees})
 
-class EmployeeListView(LoginRequiredMixin, ListView):
-    model = Employee
-    template_name = 'hris_app/employee_list.html'
-    context_object_name = 'employees'
-
-class EmployeeDetailView(LoginRequiredMixin, DetailView):
-    model = Employee
-    template_name = 'hris_app/employee_detail.html'
-    context_object_name = 'employee'
-
-class EmployeeCreateView(LoginRequiredMixin, CreateView):
-    model = Employee
-    form_class = EmployeeForm
-    template_name = 'hris_app/employee_form.html'
-    success_url = reverse_lazy('employee_list')
-
-class EmployeeUpdateView(LoginRequiredMixin, UpdateView):
-    model = Employee
-    form_class = EmployeeForm
-    template_name = 'hris_app/employee_form.html'
-    success_url = reverse_lazy('employee_list')
-
-class EmployeeDeleteView(LoginRequiredMixin, DeleteView):
-    model = Employee
-    template_name = 'hris_app/employee_confirm_delete.html'
-    success_url = reverse_lazy('employee_list')
+def department_list(request):
+    departments = Department.objects.all()
+    return render(request, 'hris_app/department_list.html', {'departments': departments})

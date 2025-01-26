@@ -14,11 +14,11 @@ class Position(models.Model):
         return self.title
 
 class Employee(models.Model):
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
-    position = models.ForeignKey(Position, on_delete=models.SET_NULL, null=True)
     hire_date = models.DateField()
+    position = models.ForeignKey(Position, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"

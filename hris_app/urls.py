@@ -1,11 +1,8 @@
 from django.urls import path
-from .views import EmployeeListView, EmployeeDetailView, EmployeeCreateView, EmployeeUpdateView, EmployeeDeleteView, DashboardView
+from . import views
 
 urlpatterns = [
-    path('', DashboardView.as_view(), name='dashboard'),
-    path('employees/', EmployeeListView.as_view(), name='employee_list'),
-    path('employee/<int:pk>/', EmployeeDetailView.as_view(), name='employee_detail'),
-    path('employee/new/', EmployeeCreateView.as_view(), name='employee_create'),
-    path('employee/<int:pk>/edit/', EmployeeUpdateView.as_view(), name='employee_update'),
-    path('employee/<int:pk>/delete/', EmployeeDeleteView.as_view(), name='employee_delete'),
+    path('', views.home, name='home'),
+    path('employees/', views.employee_list, name='employee_list'),
+    path('departments/', views.department_list, name='department_list'),
 ]

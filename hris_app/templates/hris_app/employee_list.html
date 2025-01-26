@@ -1,32 +1,12 @@
-{% extends 'hris_app/base.html' %}
-
-{% block title %}Employee List{% endblock %}
+{% extends 'base.html' %}
 
 {% block content %}
-    <h1>Employee List</h1>
-    <a href="{% url 'employee_create' %}" class="btn btn-primary mb-3">Add New Employee</a>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Position</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for employee in employees %}
-                <tr>
-                    <td>{{ employee.first_name }} {{ employee.last_name }}</td>
-                    <td>{{ employee.email }}</td>
-                    <td>{{ employee.position.title }}</td>
-                    <td>
-                        <a href="{% url 'employee_detail' employee.id %}" class="btn btn-sm btn-info">View</a>
-                        <a href="{% url 'employee_update' employee.id %}" class="btn btn-sm btn-warning">Edit</a>
-                        <a href="{% url 'employee_delete' employee.id %}" class="btn btn-sm btn-danger">Delete</a>
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<h1>Employee List</h1>
+<ul>
+{% for employee in employees %}
+    <li>{{ employee.first_name }} {{ employee.last_name }} - {{ employee.position.title }}</li>
+{% empty %}
+    <li>No employees found.</li>
+{% endfor %}
+</ul>
 {% endblock %}

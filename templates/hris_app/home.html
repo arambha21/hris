@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Welcome to HRIS{% endblock %}
+
+{% block content %}
+    <h1>Welcome to HRIS</h1>
+    <p>This is the Human Resource Information System. Please use the navigation above to access different sections of the system.</p>
+    
+    <h2>Quick Links</h2>
+    <ul>
+        <li><a href="{% url 'employee_list' %}">View All Employees</a></li>
+        <li><a href="{% url 'department_list' %}">View All Departments</a></li>
+    </ul>
+{% endblock %}
