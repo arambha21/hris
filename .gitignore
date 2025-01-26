@@ -1,0 +1,5 @@
+
+# Add the following lines to .gitignore
+hris_env/ *.pyc __pycache__/ db.sqlite3
+# Save and exit (Ctrl+X, then Y, then Enter)
+
