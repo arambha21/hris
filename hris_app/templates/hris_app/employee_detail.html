@@ -1,13 +1,16 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Employee Detail</title>
-</head>
-<body>
+{% extends 'hris_app/base.html' %}
+
+{% block title %}{{ employee.first_name }} {{ employee.last_name }}{% endblock %}
+
+{% block content %}
     <h1>{{ employee.first_name }} {{ employee.last_name }}</h1>
-    <p>Email: {{ employee.email }}</p>
-    <p>Position: {{ employee.position.title }}</p>
-    <p>Department: {{ employee.position.department.name }}</p>
-    <p>Hire Date: {{ employee.hire_date }}</p>
-</body>
-</html>
+    <div class="card">
+        <div class="card-body">
+            <p><strong>Email:</strong> {{ employee.email }}</p>
+            <p><strong>Position:</strong> {{ employee.position.title }}</p>
+            <p><strong>Department:</strong> {{ employee.position.department.name }}</p>
+            <p><strong>Hire Date:</strong> {{ employee.hire_date }}</p>
+        </div>
+    </div>
+    <a href="{% url 'employee_list' %}" class="btn btn-primary mt-3">Back to Employee List</a>
+{% endblock %}

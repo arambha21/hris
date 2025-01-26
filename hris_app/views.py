@@ -1,9 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse
-from .models import Employee, Department, Position
-
-def index(request):
-    return HttpResponse("Welcome to the HRIS app!")
+from .models import Employee
 
 def employee_list(request):
     employees = Employee.objects.all()

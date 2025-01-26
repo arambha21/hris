@@ -1,14 +1,29 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Employee List</title>
-</head>
-<body>
+{% extends 'hris_app/base.html' %}
+
+{% block title %}Employee List{% endblock %}
+
+{% block content %}
     <h1>Employee List</h1>
-    <ul>
-    {% for employee in employees %}
-        <li><a href="{% url 'hris_app:employee_detail' employee.id %}">{{ employee.first_name }} {{ employee.last_name }}</a></li>
-    {% endfor %}
-    </ul>
-</body>
-</html>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Position</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for employee in employees %}
+                <tr>
+                    <td>{{ employee.first_name }} {{ employee.last_name }}</td>
+                    <td>{{ employee.email }}</td>
+                    <td>{{ employee.position.title }}</td>
+                    <td>
+                        <a href="{% url 'employee_detail' employee.id %}" class="btn btn-sm btn-info">View</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
