@@ -12,5 +12,9 @@
             <p><strong>Hire Date:</strong> {{ employee.hire_date }}</p>
         </div>
     </div>
-    <a href="{% url 'employee_list' %}" class="btn btn-primary mt-3">Back to Employee List</a>
+    <div class="mt-3">
+        <a href="{% url 'employee_update' employee.id %}" class="btn btn-warning">Edit</a>
+        <a href="{% url 'employee_delete' employee.id %}" class="btn btn-danger">Delete</a>
+        <a href="{% url 'employee_list' %}" class="btn btn-secondary">Back to Employee List</a>
+    </div>
 {% endblock %}
