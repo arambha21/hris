@@ -30,11 +30,3 @@ class EmployeeDeleteView(DeleteView):
     model = Employee
     template_name = 'hris_app/employee_confirm_delete.html'
     success_url = reverse_lazy('employee_list')
-
-def department_list(request):
-    departments = Department.objects.all()
-    return render(request, 'hris_app/department_list.html', {'departments': departments})
-
-def position_list(request):
-    positions = Position.objects.all()
-    return render(request, 'hris_app/position_list.html', {'positions': positions})
