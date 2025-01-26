@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee Detail</title>
+</head>
+<body>
+    <h1>{{ employee.first_name }} {{ employee.last_name }}</h1>
+    <p>Email: {{ employee.email }}</p>
+    <p>Position: {{ employee.position.title }}</p>
+    <p>Department: {{ employee.position.department.name }}</p>
+    <p>Hire Date: {{ employee.hire_date }}</p>
+</body>
+</html>
