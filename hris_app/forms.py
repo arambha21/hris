@@ -20,8 +20,11 @@ class LeaveRequestForm(forms.ModelForm):
 class TrainingEventForm(forms.ModelForm):
     class Meta:
         model = TrainingEvent
-        fields = ['title', 'description', 'date', 'duration', 'location', 'trainer', 'participants']
-
+        fields = ['title', 'description', 'start_date', 'duration', 'location', 'trainer', 'participants']
+        widgets = {
+            'start_date': forms.DateInput(attrs={'type': 'date'}),  # Change 'date' to 'start_date'
+        }
+        
 class PerformanceReviewForm(forms.ModelForm):
     class Meta:
         model = PerformanceReview

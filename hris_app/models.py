@@ -88,7 +88,7 @@ class LeaveRequest(models.Model):
 class TrainingEvent(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
-    date = models.DateTimeField()
+    start_date = models.DateTimeField(default=timezone.now)  # Add this line
     duration = models.DurationField()
     location = models.CharField(max_length=200)
     trainer = models.CharField(max_length=100)

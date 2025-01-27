@@ -5,26 +5,51 @@
 
 <div class="row">
     <!-- Key Metrics -->
-    <div class="col-md-4 mb-4">
+    <div class="col-md-12 mb-4">
         <div class="card">
-            <div class="card-header">Key Metrics</div>
+            <div class="card-header">
+                <h2 class="h5 mb-0">Key Metrics</h2>
+            </div>
             <div class="card-body">
-                <p>Total Employees: {{ total_employees }}</p>
-                <p>Total Departments: {{ total_departments }}</p>
-                <p>Pending Leave Requests: {{ pending_leave_requests }}</p>
-                <p>Upcoming Trainings: {{ upcoming_trainings }}</p>
+                <div class="row">
+                    <div class="col-md-3">
+                        <h6>Total Employees</h6>
+                        <p class="h3">{{ total_employees|default:"N/A" }}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h6>Total Departments</h6>
+                        <p class="h3">{{ total_departments|default:"N/A" }}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h6>Pending Leave Requests</h6>
+                        <p class="h3">{{ pending_leave_requests|default:"N/A" }}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h6>Upcoming Trainings</h6>
+                        <p class="h3">{{ upcoming_trainings|default:"N/A" }}</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+</div>
 
+<div class="row">
     <!-- Department-wise Employee Count -->
     <div class="col-md-4 mb-4">
-        <div class="card">
-            <div class="card-header">Department-wise Employee Count</div>
+        <div class="card h-100">
+            <div class="card-header">
+                <h2 class="h5 mb-0">Department-wise Employee Count</h2>
+            </div>
             <div class="card-body">
-                <ul class="list-unstyled">
+                <ul class="list-group list-group-flush">
                     {% for dept in department_employee_count %}
-                    <li>{{ dept.name }}: {{ dept.employee_count }}</li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ dept.name }}
+                        <span class="badge bg-primary rounded-pill">{{ dept.employee_count }}</span>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item">No departments available.</li>
                     {% endfor %}
                 </ul>
             </div>
@@ -33,57 +58,40 @@
 
     <!-- Recent Reports -->
     <div class="col-md-4 mb-4">
-        <div class="card">
-            <div class="card-header">Recent Reports</div>
+        <div class="card h-100">
+            <div class="card-header">
+                <h2 class="h5 mb-0">Recent Reports</h2>
+            </div>
             <div class="card-body">
-                <ul class="list-unstyled">
+                <ul class="list-group list-group-flush">
                     {% for report in recent_reports %}
-                    <li>
+                    <li class="list-group-item">
                         <a href="{% url 'report_detail' report.pk %}">{{ report.title }}</a>
                         <small class="text-muted d-block">{{ report.report_type }} - {{ report.created_at|date:"F d, Y" }}</small>
                     </li>
                     {% empty %}
-                    <li>No recent reports.</li>
+                    <li class="list-group-item">No recent reports.</li>
                     {% endfor %}
                 </ul>
             </div>
         </div>
     </div>
-</div>
 
-<div class="row">
     <!-- Recent Leave Requests -->
-    <div class="col-md-6 mb-4">
-        <div class="card">
-            <div class="card-header">Recent Leave Requests</div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h2 class="h5 mb-0">Recent Leave Requests</h2>
+            </div>
             <div class="card-body">
-                <ul class="list-unstyled">
+                <ul class="list-group list-group-flush">
                     {% for leave in recent_leave_requests %}
-                    <li>
-                        {{ leave.employee.full_name }} - {{ leave.leave_type }}
+                    <li class="list-group-item">
+                        <strong>{{ leave.employee.full_name }}</strong> - {{ leave.leave_type }}
                         <small class="text-muted d-block">{{ leave.start_date|date:"F d, Y" }} to {{ leave.end_date|date:"F d, Y" }}</small>
                     </li>
                     {% empty %}
-                    <li>No recent leave requests.</li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <!-- Upcoming Trainings -->
-    <div class="col-md-6 mb-4">
-        <div class="card">
-            <div class="card-header">Upcoming Trainings</div>
-            <div class="card-body">
-                <ul class="list-unstyled">
-                    {% for training in upcoming_trainings_list %}
-                    <li>
-                        {{ training.title }}
-                        <small class="text-muted d-block">{{ training.start_date|date:"F d, Y" }} - {{ training.participants.count }} participants</small>
-                    </li>
-                    {% empty %}
-                    <li>No upcoming trainings.</li>
+                    <li class="list-group-item">No recent leave requests.</li>
                     {% endfor %}
                 </ul>
             </div>
@@ -92,38 +100,65 @@
 </div>
 
 <div class="row">
-    <!-- Recent Performance Reviews -->
+    <!-- Upcoming Trainings -->
     <div class="col-md-6 mb-4">
-        <div class="card">
-            <div class="card-header">Recent Performance Reviews</div>
+        <div class="card h-100">
+            <div class="card-header">
+                <h2 class="h5 mb-0">Upcoming Trainings</h2>
+            </div>
             <div class="card-body">
-                <ul class="list-unstyled">
-                    {% for review in recent_performance_reviews %}
-                    <li>
-                        {{ review.employee.full_name }} - {{ review.review_type }}
-                        <small class="text-muted d-block">Reviewed on: {{ review.review_date|date:"F d, Y" }}</small>
+                <ul class="list-group list-group-flush">
+                    {% for training in upcoming_trainings_list %}
+                    <li class="list-group-item">
+                        <strong>{{ training.title }}</strong>
+                        <small class="text-muted d-block">{{ training.start_date|date:"F d, Y" }} - {{ training.participants.count }} participants</small>
                     </li>
                     {% empty %}
-                    <li>No recent performance reviews.</li>
+                    <li class="list-group-item">No upcoming trainings.</li>
                     {% endfor %}
                 </ul>
             </div>
         </div>
     </div>
 
-    <!-- Recent Payroll Entries -->
+    <!-- Recent Performance Reviews -->
     <div class="col-md-6 mb-4">
-        <div class="card">
-            <div class="card-header">Recent Payroll Entries</div>
+        <div class="card h-100">
+            <div class="card-header">
+                <h2 class="h5 mb-0">Recent Performance Reviews</h2>
+            </div>
             <div class="card-body">
-                <ul class="list-unstyled">
+                <ul class="list-group list-group-flush">
+                    {% for review in recent_performance_reviews %}
+                    <li class="list-group-item">
+                        <strong>{{ review.employee.full_name }}</strong> - {{ review.review_type }}
+                        <small class="text-muted d-block">Reviewed on: {{ review.review_date|date:"F d, Y" }}</small>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item">No recent performance reviews.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Recent Payroll Entries -->
+    <div class="col-md-12 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="h5 mb-0">Recent Payroll Entries</h2>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
                     {% for payroll in recent_payroll_entries %}
-                    <li>
-                        {{ payroll.employee.full_name }} - ${{ payroll.net_salary }}
+                    <li class="list-group-item">
+                        <strong>{{ payroll.employee.full_name }}</strong> - ${{ payroll.net_salary }}
                         <small class="text-muted d-block">Pay period: {{ payroll.pay_period_start|date:"F d" }} - {{ payroll.pay_period_end|date:"F d, Y" }}</small>
                     </li>
                     {% empty %}
-                    <li>No recent payroll entries.</li>
+                    <li class="list-group-item">No recent payroll entries.</li>
                     {% endfor %}
                 </ul>
             </div>

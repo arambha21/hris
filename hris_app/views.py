@@ -17,13 +17,20 @@ def custom_logout(request):
 def dashboard(request):
     context = {
         'total_employees': Employee.objects.count(),
-        'active_employees': Employee.objects.filter(is_active=True).count(),
+        'active_employees': Employee.objects.filter(status='Active').count(),
         'employees_on_leave': LeaveRequest.objects.filter(status='approved', end_date__gte=timezone.now().date()).count(),
         'total_departments': Department.objects.count(),
-        'recent_leave_requests': LeaveRequest.objects.order_by('-created_at')[:5],
-        'upcoming_trainings': TrainingEvent.objects.filter(start_date__gte=timezone.now().date()).order_by('start_date')[:5],
+        'recent_leave_requests': LeaveRequest.objects.order_by('-start_date')[:5],
+        'upcoming_trainings' : TrainingEvent.objects.filter(start_date__gte=timezone.now()).count()
+        
     }
     return render(request, 'hris_app/dashboard.html', context)
+
+"""
+@login_required
+def dashboard(request):
+    return render(request, 'hris_app/dashboard.html')
+"""
 
 @login_required
 def employee_list(request):
@@ -73,10 +80,6 @@ def employee_delete(request, pk):
 def home(request):
     return render(request, 'hris_app/home.html')
 
-
-@login_required
-def dashboard(request):
-    return render(request, 'hris_app/dashboard.html')
 
 @login_required
 def employee_list(request):
