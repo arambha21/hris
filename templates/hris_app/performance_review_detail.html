@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Performance Review - HRIS{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Performance Review Details</h1>
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">{{ review.employee.user.get_full_name }}</h5>
+        <p class="card-text"><strong>Reviewer:</strong> {{ review.reviewer.get_full_name }}</p>
+        <p class="card-text"><strong>Review Date:</strong> {{ review.review_date }}</p>
+        <p class="card-text"><strong>Performance Score:</strong> {{ review.performance_score }}/5</p>
+        <p class="card-text"><strong>Comments:</strong> {{ review.comments }}</p>
+        <a href="{% url 'performance_review_update' review.pk %}" class="btn btn-warning">Edit</a>
+        <a href="{% url 'performance_review_delete' review.pk %}" class="btn btn-danger">Delete</a>
+        <a href="{% url 'performance_review_list' %}" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>
+{% endblock %}

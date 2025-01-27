@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Training - HRIS{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Training Details</h1>
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">{{ training.title }}</h5>
+        <p class="card-text"><strong>Description:</strong> {{ training.description }}</p>
+        <p class="card-text"><strong>Start Date:</strong> {{ training.start_date }}</p>
+        <p class="card-text"><strong>End Date:</strong> {{ training.end_date }}</p>
+        <p class="card-text"><strong>Capacity:</strong> {{ training.capacity }}</p>
+        <h6 class="mt-4">Participants:</h6>
+        <ul>
+            {% for participant in training.participants.all %}
+                <li>{{ participant.user.get_full_name }}</li>
+            {% empty %}
+                <li>No participants yet.</li>
+            {% endfor %}
+        </ul>
+        <a href="{% url 'training_update' training.pk %}" class="btn btn-warning">Edit</a>
+        <a href="{% url 'training_delete' training.pk %}" class="btn btn-danger">Delete</a>
+        <a href="{% url 'training_add_participant' training.pk %}" class="btn btn-success">Add Participant</a>
+        <a href="{% url 'training_list' %}" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>
+{% endblock %}

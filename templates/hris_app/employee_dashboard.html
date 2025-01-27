@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}Employee Dashboard - HRIS{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Welcome, {{ employee.full_name }}</h1>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                Recent Leave Requests
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for leave in leave_requests %}
+                    <li class="list-group-item">
+                        {{ leave.start_date|date:"M d" }} - {{ leave.end_date|date:"M d" }}: {{ leave.get_leave_type_display }}
+                        <span class="badge bg-{{ leave.status }}">{{ leave.status }}</span>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item">No recent leave requests.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                Upcoming Trainings
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for training in upcoming_trainings %}
+                    <li class="list-group-item">
+                        {{ training.date|date:"M d" }}: {{ training.title }}
+                    </li>
+                {% empty %}
+                    <li class="list-group-item">No upcoming trainings.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                Recent Payrolls
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for payroll in recent_payrolls %}
+                    <li class="list-group-item">
+                        {{ payroll.pay_period_end|date:"M d, Y" }}: ${{ payroll.net_pay }}
+                    </li>
+                {% empty %}
+                    <li class="list-group-item">No recent payroll information.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                Recent Performance Reviews
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for review in recent_performance_reviews %}
+                    <li class="list-group-item">
+                        {{ review.review_date|date:"M d, Y" }}: {{ review.get_rating_display }}
+                    </li>
+                {% empty %}
+                    <li class="list-group-item">No recent performance reviews.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

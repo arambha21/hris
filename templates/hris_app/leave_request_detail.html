@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Leave Request - HRIS{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Leave Request Details</h1>
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">{{ leave_request.employee.user.get_full_name }}</h5>
+        <p class="card-text"><strong>Leave Type:</strong> {{ leave_request.get_leave_type_display }}</p>
+        <p class="card-text"><strong>Start Date:</strong> {{ leave_request.start_date }}</p>
+        <p class="card-text"><strong>End Date:</strong> {{ leave_request.end_date }}</p>
+        <p class="card-text"><strong>Status:</strong> {{ leave_request.get_status_display }}</p>
+        <p class="card-text"><strong>Reason:</strong> {{ leave_request.reason }}</p>
+        {% if leave_request.status == 'PE' %}
+            <a href="{% url 'leave_request_update' leave_request.pk %}" class="btn btn-warning">Edit</a>
+            <a href="{% url 'leave_request_delete' leave_request.pk %}" class="btn btn-danger">Delete</a>
+        {% endif %}
+        <a href="{% url 'leave_request_list' %}" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>
+{% endblock %}

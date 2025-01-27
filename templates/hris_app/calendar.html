@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+
+{% block title %}Calendar - HRIS{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">HRIS Calendar</h1>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="showLeaveRequests" checked>
+                <label class="form-check-label" for="showLeaveRequests">Show Leave Requests</label>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="showTrainings" checked>
+                <label class="form-check-label" for="showTrainings">Show Trainings</label>
+            </div>
+        </div>
+    </div>
+
+    <div id="calendar"></div>
+
+    <!-- New Event Modal -->
+    <div class="modal fade" id="newEventModal" tabindex="-1" aria-labelledby="newEventModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newEventModalLabel">Create New Event</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="newEventForm">
+                        <div class="mb-3">
+                            <label for="eventType" class="form-label">Event Type</label>
+                            <select class="form-select" id="eventType" required>
+                                <option value="">Choose...</option>
+                                <option value="leave">Leave Request</option>
+                                <option value="training">Training</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="eventTitle" class="form-label">Event Title</label>
+                            <input type="text" class="form-control" id="eventTitle" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="eventDate" class="form-label">Date</label>
+                            <input type="date" class="form-control" id="eventDate" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveNewEvent">Save Event</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css" rel="stylesheet">
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        events: [
+            {% for event in events %}
+            {
+                title: '{{ event.title }}',
+                start: '{{ event.start_date|date:"Y-m-d" }}',
+                end: '{{ event.end_date|date:"Y-m-d" }}',
+                url: '{{ event.url }}',
+                color: '{{ event.color }}',
+                extendedProps: {
+                    type: '{{ event.type }}'
+                }
+            },
+            {% endfor %}
+        ],
+        eventClick: function(info) {
+            if (info.event.url) {
+                info.jsEvent.preventDefault();
+                window.open(info.event.url, "_blank");
+            }
+        },
+        dateClick: function(info) {
+            document.getElementById('eventDate').value = info.dateStr;
+            var myModal = new bootstrap.Modal(document.getElementById('newEventModal'));
+            myModal.show();
+        }
+    });
+    calendar.render();
+
+    // Event filtering
+    document.getElementById('showLeaveRequests').addEventListener('change', filterEvents);
+    document.getElementById('showTrainings').addEventListener('change', filterEvents);
+
+    function filterEvents() {
+        var showLeaveRequests = document.getElementById('showLeaveRequests').checked;
+        var showTrainings = document.getElementById('showTrainings').checked;
+
+        calendar.getEvents().forEach(function(event) {
+            if (event.extendedProps.type === 'leave_request') {
+                event.remove();
+                if (showLeaveRequests) {
+                    calendar.addEvent(event);
+                }
+            } else if (event.extendedProps.type === 'training') {
+                event.remove();
+                if (showTrainings) {
+                    calendar.addEvent(event);
+                }
+            }
+        });
+    }
+
+    // New event creation
+    document.getElementById('saveNewEvent').addEventListener('click', function() {
+        var eventType = document.getElementById('eventType').value;
+        var title = document.getElementById('eventTitle').value;
+        var date = document.getElementById('eventDate').value;
+
+        if (eventType && title && date) {
+            var newEvent = {
+                title: title,
+                start: date,
+                allDay: true,
+                color: eventType === 'leave' ? '#FFA500' : '#4CAF50',
+                extendedProps: {
+                    type: eventType === 'leave' ? 'leave_request' : 'training'
+                }
+            };
+            calendar.addEvent(newEvent);
+            // Here you would typically send an AJAX request to save the event to the server
+            alert("New " + eventType + " event created. Remember to save it in the system.");
+            bootstrap.Modal.getInstance(document.getElementById('newEventModal')).hide();
+        } else {
+            alert("Please fill all fields.");
+        }
+    });
+
+    // Add legend
+    var legend = document.createElement('div');
+    legend.innerHTML = `
+        <div class="mt-3">
+            <span class="badge bg-warning me-2" style="width: 30px;">&nbsp;</span> Leave Requests
+            <span class="badge bg-success ms-3 me-2" style="width: 30px;">&nbsp;</span> Trainings
+        </div>
+    `;
+    calendarEl.parentNode.insertBefore(legend, calendarEl.nextSibling);
+});
+</script>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Upcoming Trainings - HRIS{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Upcoming Trainings</h1>
+
+{% if trainings %}
+    <div class="row">
+        {% for training in trainings %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ training.title }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ training.date|date:"F d, Y" }}</h6>
+                        <p class="card-text">{{ training.description|truncatewords:20 }}</p>
+                        <a href="{% url 'training_detail' training.pk %}" class="btn btn-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p>No upcoming trainings scheduled.</p>
+{% endif %}
+{% endblock %}

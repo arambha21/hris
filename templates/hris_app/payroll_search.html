@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Payroll Search - HRIS{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Payroll Search</h1>
+
+<form method="get" class="mb-4">
+    <div class="input-group">
+        <input type="text" name="q" class="form-control" placeholder="Search payrolls..." value="{{ query|default:'' }}">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </div>
+</form>
+
+{% if payrolls %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Employee</th>
+                <th>Pay Period Start</th>
+                <th>Pay Period End</th>
+                <th>Gross Pay</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payroll in payrolls %}
+                <tr>
+                    <td>{{ payroll.employee.full_name }}</td>
+                    <td>{{ payroll.pay_period_start }}</td>
+                    <td>{{ payroll.pay_period_end }}</td>
+                    <td>${{ payroll.gross_pay }}</td>
+                    <td>
+                        <a href="{% url 'payroll_detail' payroll.pk %}" class="btn btn-sm btn-info">View</a>
+                        <a href="{% url 'payroll_form' payroll.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No payroll records found.</p>
+{% endif %}
+{% endblock %}

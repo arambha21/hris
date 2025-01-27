@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Performance Reviews - HRIS{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Performance Reviews</h1>
+<a href="{% url 'performance_review_create' %}" class="btn btn-primary mb-3">Create New Performance Review</a>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Employee</th>
+            <th>Reviewer</th>
+            <th>Review Date</th>
+            <th>Performance Score</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for review in performance_reviews %}
+        <tr>
+            <td>{{ review.employee.user.get_full_name }}</td>
+            <td>{{ review.reviewer.get_full_name }}</td>
+            <td>{{ review.review_date }}</td>
+            <td>{{ review.performance_score }}/5</td>
+            <td>
+                <a href="{% url 'performance_review_detail' review.pk %}" class="btn btn-sm btn-info">View</a>
+                <a href="{% url 'performance_review_update' review.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                <a href="{% url 'performance_review_delete' review.pk %}" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">No performance reviews found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ employee.user.get_full_name }} - Profile{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Employee Profile</h1>
+
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ employee.user.get_full_name }}</h5>
+                    <p class="card-text"><strong>Email:</strong> {{ employee.user.email }}</p>
+                    <p class="card-text"><strong>Department:</strong> {{ employee.department.name }}</p>
+                    <p class="card-text"><strong>Position:</strong> {{ employee.position }}</p>
+                    <p class="card-text"><strong>Date Hired:</strong> {{ employee.date_hired }}</p>
+                    <p class="card-text"><strong>Phone:</strong> {{ employee.phone }}</p>
+                    <p class="card-text"><strong>Address:</strong> {{ employee.address }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header">Emergency Contact</div>
+                <div class="card-body">
+                    <p class="card-text"><strong>Name:</strong> {{ employee.emergency_contact_name }}</p>
+                    <p class="card-text"><strong>Phone:</strong> {{ employee.emergency_contact_phone }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header">Actions</div>
+                <div class="card-body">
+                    <a href="{% url 'employee_update' employee.pk %}" class="btn btn-warning btn-block mb-2">Edit Profile</a>
+                    <a href="{% url 'leave_request_create' %}" class="btn btn-primary btn-block mb-2">Request Leave</a>
+                    <a href="{% url 'training_list' %}" class="btn btn-info btn-block">View Available Trainings</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">Recent Leave Requests</div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        {% for leave in recent_leave_requests %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ leave.get_leave_type_display }}
+                                <span class="badge bg-primary rounded-pill">{{ leave.start_date|date:"M d" }} - {{ leave.end_date|date:"M d" }}</span>
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item">No recent leave requests</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'leave_request_list' %}" class="btn btn-primary btn-sm">View All Leave Requests</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">Recent Trainings</div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        {% for training in recent_trainings %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ training.title }}
+                                <span class="badge bg-primary rounded-pill">{{ training.start_date|date:"M d" }} - {{ training.end_date|date:"M d" }}</span>
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item">No recent trainings</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'training_list' %}" class="btn btn-primary btn-sm">View All Trainings</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

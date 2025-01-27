@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ department.name }} - HRIS{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Department Details</h1>
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">{{ department.name }}</h5>
+        <p class="card-text"><strong>Description:</strong> {{ department.description }}</p>
+        <p class="card-text"><strong>Manager:</strong> {{ department.manager.user.get_full_name|default:"Not Assigned" }}</p>
+        <h6 class="mt-4">Employees in this Department:</h6>
+        <ul>
+            {% for employee in department.employee_set.all %}
+                <li>{{ employee.user.get_full_name }} ({{ employee.position }})</li>
+            {% empty %}
+                <li>No employees assigned to this department.</li>
+            {% endfor %}
+        </ul>
+        <a href="{% url 'department_update' department.pk %}" class="btn btn-warning">Edit</a>
+        <a href="{% url 'department_delete' department.pk %}" class="btn btn-danger">Delete</a>
+        <a href="{% url 'department_list' %}" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>
+{% endblock %}

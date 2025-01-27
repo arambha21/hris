@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Payroll Entry - HRIS{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Payroll Entry Details</h1>
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">{{ payroll.employee.user.get_full_name }}</h5>
+        <p class="card-text"><strong>Pay Period:</strong> {{ payroll.pay_period_start }} - {{ payroll.pay_period_end }}</p>
+        <p class="card-text"><strong>Base Salary:</strong> ${{ payroll.base_salary }}</p>
+        <p class="card-text"><strong>Overtime Pay:</strong> ${{ payroll.overtime_pay }}</p>
+        <p class="card-text"><strong>Deductions:</strong> ${{ payroll.deductions }}</p>
+        <p class="card-text"><strong>Net Pay:</strong> ${{ payroll.net_pay }}</p>
+        <a href="{% url 'payroll_update' payroll.pk %}" class="btn btn-warning">Edit</a>
+        <a href="{% url 'payroll_delete' payroll.pk %}" class="btn btn-danger">Delete</a>
+        <a href="{% url 'payroll_list' %}" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>
+{% endblock %}

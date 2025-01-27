@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Participant to Training - HRIS{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Add Participant to {{ training.title }}</h1>
+<form method="post">
+    {% csrf_token %}
+    {% for field in form %}
+        <div class="mb-3">
+            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+                <div class="alert alert-danger">
+                    {{ field.errors }}
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">Add Participant</button>
+    <a href="{% url 'training_detail' training.pk %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}
