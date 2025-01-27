@@ -9,7 +9,6 @@
     <thead>
         <tr>
             <th>Name</th>
-            <th>Manager</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -17,7 +16,6 @@
         {% for department in departments %}
         <tr>
             <td>{{ department.name }}</td>
-            <td>{{ department.manager.user.get_full_name|default:"Not Assigned" }}</td>
             <td>
                 <a href="{% url 'department_detail' department.pk %}" class="btn btn-sm btn-info">View</a>
                 <a href="{% url 'department_update' department.pk %}" class="btn btn-sm btn-warning">Edit</a>
@@ -26,7 +24,7 @@
         </tr>
         {% empty %}
         <tr>
-            <td colspan="3">No departments found.</td>
+            <td colspan="2">No departments found.</td>
         </tr>
         {% endfor %}
     </tbody>

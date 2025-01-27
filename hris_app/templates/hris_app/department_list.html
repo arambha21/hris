@@ -5,7 +5,12 @@
 <a href="{% url 'add_department' %}" class="btn btn-primary">Add Department</a>
 <ul>
 {% for department in departments %}
-    <li>{{ department.name }}</li>
+    <li>
+        {{ department.name }}
+        <a href="{% url 'department_detail' department.pk %}">View</a>
+        <a href="{% url 'department_update' department.pk %}">Edit</a>
+        <a href="{% url 'department_delete' department.pk %}">Delete</a>
+    </li>
 {% empty %}
     <li>No departments found.</li>
 {% endfor %}
