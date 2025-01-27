@@ -1,89 +1,91 @@
 {% extends 'base.html' %}
 
-{% block title %}Dashboard - HRIS{% endblock %}
-
 {% block content %}
 <h1 class="mb-4">HRIS Dashboard</h1>
 
 <div class="row">
-    <div class="col-md-3 mb-4">
-        <div class="card bg-primary text-white">
+    <!-- Employee Overview -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                Employee Overview
+            </div>
             <div class="card-body">
-                <h5 class="card-title">Total Employees</h5>
-                <h2 class="card-text">{{ total_employees }}</h2>
+                <h5 class="card-title">Total Employees: {{ total_employees }}</h5>
+                <p class="card-text">Active: {{ active_employees }}</p>
+                <p class="card-text">On Leave: {{ employees_on_leave }}</p>
+                <a href="{% url 'employee_list' %}" class="btn btn-primary">View All Employees</a>
             </div>
         </div>
     </div>
-    <div class="col-md-3 mb-4">
-        <div class="card bg-success text-white">
-            <div class="card-body">
-                <h5 class="card-title">New Hires (30 days)</h5>
-                <h2 class="card-text">{{ new_hires }}</h2>
+
+    <!-- Department Overview -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                Department Overview
             </div>
-        </div>
-    </div>
-    <div class="col-md-3 mb-4">
-        <div class="card bg-warning text-dark">
             <div class="card-body">
-                <h5 class="card-title">Pending Leave Requests</h5>
-                <h2 class="card-text">{{ pending_leave_requests }}</h2>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 mb-4">
-        <div class="card bg-info text-white">
-            <div class="card-body">
-                <h5 class="card-title">Upcoming Trainings</h5>
-                <h2 class="card-text">{{ upcoming_trainings }}</h2>
+                <h5 class="card-title">Total Departments: {{ total_departments }}</h5>
+                <a href="{% url 'department_list' %}" class="btn btn-primary">View All Departments</a>
             </div>
         </div>
     </div>
 </div>
 
 <div class="row">
+    <!-- Recent Leave Requests -->
     <div class="col-md-6 mb-4">
         <div class="card">
             <div class="card-header">
-                Recent Performance Reviews
+                Recent Leave Requests
             </div>
             <div class="card-body">
                 <ul class="list-group">
-                    {% for review in recent_reviews %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            {{ review.employee.user.get_full_name }}
-                            <span class="badge bg-primary rounded-pill">{{ review.performance_score }}/5</span>
-                        </li>
+                    {% for leave_request in recent_leave_requests %}
+                    <li class="list-group-item">
+                        {{ leave_request.employee.full_name }} - {{ leave_request.start_date|date:"M d, Y" }} to {{ leave_request.end_date|date:"M d, Y" }}
+                    </li>
                     {% empty %}
-                        <li class="list-group-item">No recent reviews</li>
+                    <li class="list-group-item">No recent leave requests</li>
                     {% endfor %}
                 </ul>
-            </div>
-            <div class="card-footer">
-                <a href="{% url 'performance_review_list' %}" class="btn btn-primary btn-sm">View All Reviews</a>
+                <a href="{% url 'leave_request_list' %}" class="btn btn-primary mt-3">View All Leave Requests</a>
             </div>
         </div>
     </div>
 
+    <!-- Upcoming Trainings -->
     <div class="col-md-6 mb-4">
         <div class="card">
             <div class="card-header">
-                Department Summary
+                Upcoming Trainings
             </div>
             <div class="card-body">
                 <ul class="list-group">
-                    {% for department in departments %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            {{ department.name }}
-                            <span class="badge bg-secondary rounded-pill">{{ department.employee_count }}</span>
-                        </li>
+                    {% for training in upcoming_trainings %}
+                    <li class="list-group-item">
+                        {{ training.title }} - {{ training.start_date|date:"M d, Y" }}
+                    </li>
                     {% empty %}
-                        <li class="list-group-item">No departments found</li>
+                    <li class="list-group-item">No upcoming trainings</li>
                     {% endfor %}
                 </ul>
+                <a href="{% url 'training_list' %}" class="btn btn-primary mt-3">View All Trainings</a>
             </div>
-            <div class="card-footer">
-                <a href="{% url 'department_list' %}" class="btn btn-primary btn-sm">View Departments</a>
-            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mt-4">
+    <div class="col-12">
+        <h2>Quick Actions</h2>
+        <div class="btn-group" role="group" aria-label="Quick Actions">
+            <a href="{% url 'employee_add' %}" class="btn btn-success">Add Employee</a>
+            <a href="{% url 'leave_request_create' %}" class="btn btn-info">Submit Leave Request</a>
+            <a href="{% url 'training_create' %}" class="btn btn-warning">Schedule Training</a>
+            <a href="{% url 'performance_review_create' %}" class="btn btn-danger">Create Performance Review</a>
         </div>
     </div>
 </div>

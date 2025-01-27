@@ -6,11 +6,65 @@ from django.db.models import Count, Avg, Q
 from .models import Employee, Department, LeaveRequest, TrainingEvent, Payroll, PerformanceReview, EmployeeDocument, Attendance
 from .forms import LeaveRequestForm, EmployeeForm, DepartmentForm, EmployeeDocumentForm, TrainingEventForm, PerformanceReviewForm, PayrollForm,AttendanceForm
 
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
 @login_required
+def dashboard(request):
+    context = {
+        'total_employees': Employee.objects.count(),
+        'active_employees': Employee.objects.filter(is_active=True).count(),
+        'employees_on_leave': LeaveRequest.objects.filter(status='approved', end_date__gte=timezone.now().date()).count(),
+        'total_departments': Department.objects.count(),
+        'recent_leave_requests': LeaveRequest.objects.order_by('-created_at')[:5],
+        'upcoming_trainings': Training.objects.filter(start_date__gte=timezone.now().date()).order_by('start_date')[:5],
+    }
+    return render(request, 'hris_app/dashboard.html', context)
+
+@login_required
+def employee_list(request):
+    employees = Employee.objects.all()
+    return render(request, 'hris_app/employee_list.html', {'employees': employees})
+
+@login_required
+def employee_detail(request, pk):
+    employee = get_object_or_404(Employee, pk=pk)
+    return render(request, 'hris_app/employee_detail.html', {'employee': employee})
+
+@login_required
+def employee_form(request, pk=None):
+    if pk:
+        employee = get_object_or_404(Employee, pk=pk)
+    else:
+        employee = None
+
+    if request.method == 'POST':
+        form = EmployeeForm(request.POST, instance=employee)
+        if form.is_valid():
+            form.save()
+            return redirect('employee_list')
+    else:
+        form = EmployeeForm(instance=employee)
+
+    return render(request, 'hris_app/employee_form.html', {'form': form, 'employee': employee})
+
+@login_required
+def employee_delete(request, pk):
+    employee = get_object_or_404(Employee, pk=pk)
+    if request.method == 'POST':
+        employee.delete()
+        messages.success(request, 'Employee deleted successfully.')
+        return redirect('employee_list')
+    return render(request, 'hris_app/employee_confirm_delete.html', {'employee': employee})
+# Add this function if it doesn't exist
+@login_required
+def employee_delete(request, pk):
+    employee = get_object_or_404(Employee, pk=pk)
+    if request.method == 'POST':
+        employee.delete()
+        messages.success(request, 'Employee deleted successfully.')
+        return redirect('employee_list')
+    return render(request, 'hris_app/employee_confirm_delete.html', {'employee': employee})
 def home(request):
     return render(request, 'hris_app/home.html')
+
 
 @login_required
 def dashboard(request):
@@ -425,8 +479,7 @@ def edit_employee(request, pk):
         form = EmployeeForm(request.POST, instance=employee)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Employee updated successfully.')
-            return redirect('employee_list')
+            return redirect('employee_detail', pk=employee.pk)
     else:
         form = EmployeeForm(instance=employee)
     return render(request, 'hris_app/edit_employee.html', {'form': form, 'employee': employee})
@@ -667,3 +720,80 @@ def add_employee_document(request, employee_id):
         form = EmployeeDocumentForm()
     return render(request, 'hris_app/add_employee_document.html', {'form': form, 'employee': employee})
 
+@login_required
+def edit_employee(request, pk):
+    employee = get_object_or_404(Employee, pk=pk)
+    if request.method == 'POST':
+        form = EmployeeForm(request.POST, instance=employee)
+        if form.is_valid():
+            form.save()
+            return redirect('employee_detail', pk=employee.pk)
+    else:
+        form = EmployeeForm(instance=employee)
+    return render(request, 'hris_app/employee_form.html', {'form': form, 'employee': employee})
+
+@login_required
+def employee_delete(request, pk):
+    employee = get_object_or_404(Employee, pk=pk)
+    if request.method == 'POST':
+        employee.delete()
+        messages.success(request, 'Employee deleted successfully.')
+        return redirect('employee_list')
+    return render(request, 'hris_app/employee_confirm_delete.html', {'employee': employee})
+
+@login_required
+def payroll_list(request):
+    payrolls = Payroll.objects.all()  # Assuming you have a Payroll model
+    return render(request, 'hris_app/payroll_list.html', {'payrolls': payrolls})
+
+@login_required
+def payroll_form(request):
+    if request.method == 'POST':
+        form = PayrollForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('payroll_list')
+    else:
+        form = PayrollForm()
+    return render(request, 'hris_app/payroll_form.html', {'form': form})
+
+@login_required
+def payroll_list(request):
+    payrolls = Payroll.objects.all()
+    return render(request, 'hris_app/payroll_list.html', {'payrolls': payrolls})
+
+@login_required
+def payroll_create(request):
+    if request.method == 'POST':
+        form = PayrollForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('payroll_list')
+    else:
+        form = PayrollForm()
+    return render(request, 'hris_app/payroll_form.html', {'form': form})
+
+@login_required
+def payroll_detail(request, pk):
+    payroll = get_object_or_404(Payroll, pk=pk)
+    return render(request, 'hris_app/payroll_detail.html', {'payroll': payroll})
+
+@login_required
+def payroll_update(request, pk):
+    payroll = get_object_or_404(Payroll, pk=pk)
+    if request.method == 'POST':
+        form = PayrollForm(request.POST, instance=payroll)
+        if form.is_valid():
+            form.save()
+            return redirect('payroll_list')
+    else:
+        form = PayrollForm(instance=payroll)
+    return render(request, 'hris_app/payroll_form.html', {'form': form})
+
+@login_required
+def payroll_delete(request, pk):
+    payroll = get_object_or_404(Payroll, pk=pk)
+    if request.method == 'POST':
+        payroll.delete()
+        return redirect('payroll_list')
+    return render(request, 'hris_app/payroll_confirm_delete.html', {'payroll': payroll})

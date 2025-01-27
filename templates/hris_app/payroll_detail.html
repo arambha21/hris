@@ -1,20 +1,22 @@
 {% extends 'base.html' %}
 
-{% block title %}Payroll Entry - HRIS{% endblock %}
+{% block title %}Payroll Detail - HRIS{% endblock %}
 
 {% block content %}
-<h1 class="mb-4">Payroll Entry Details</h1>
+<h1 class="mb-4">Payroll Detail</h1>
 <div class="card">
     <div class="card-body">
-        <h5 class="card-title">{{ payroll.employee.user.get_full_name }}</h5>
-        <p class="card-text"><strong>Pay Period:</strong> {{ payroll.pay_period_start }} - {{ payroll.pay_period_end }}</p>
-        <p class="card-text"><strong>Base Salary:</strong> ${{ payroll.base_salary }}</p>
-        <p class="card-text"><strong>Overtime Pay:</strong> ${{ payroll.overtime_pay }}</p>
-        <p class="card-text"><strong>Deductions:</strong> ${{ payroll.deductions }}</p>
-        <p class="card-text"><strong>Net Pay:</strong> ${{ payroll.net_pay }}</p>
-        <a href="{% url 'payroll_update' payroll.pk %}" class="btn btn-warning">Edit</a>
-        <a href="{% url 'payroll_delete' payroll.pk %}" class="btn btn-danger">Delete</a>
-        <a href="{% url 'payroll_list' %}" class="btn btn-secondary">Back to List</a>
+        <h5 class="card-title">Employee: {{ payroll.employee }}</h5>
+        <p class="card-text">Pay Period: {{ payroll.pay_period_start }} to {{ payroll.pay_period_end }}</p>
+        <p class="card-text">Gross Pay: ${{ payroll.gross_pay }}</p>
+        <p class="card-text">Net Pay: ${{ payroll.net_pay }}</p>
+        <p class="card-text">Deductions: ${{ payroll.deductions }}</p>
+        <p class="card-text">Payment Date: {{ payroll.payment_date }}</p>
     </div>
+</div>
+<div class="mt-3">
+    <a href="{% url 'payroll_update' payroll.pk %}" class="btn btn-primary">Edit</a>
+    <a href="{% url 'payroll_delete' payroll.pk %}" class="btn btn-danger">Delete</a>
+    <a href="{% url 'payroll_list' %}" class="btn btn-secondary">Back to List</a>
 </div>
 {% endblock %}

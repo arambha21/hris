@@ -1,24 +1,17 @@
 from django.urls import path
-from django.contrib.auth.models import User
-
-# List all users
-all_users = User.objects.all()
-for user in all_users:
-    print(f"Username: {user.username}, Email: {user.email}, Is superuser: {user.is_superuser}")
-
-# List only superusers
-superusers = User.objects.filter(is_superuser=True)
-for user in superusers:
-    print(f"Superuser - Username: {user.username}, Email: {user.email}")
 from . import views
 
 urlpatterns = [
     # Employee related URLs
     path('employees/', views.employee_list, name='employee_list'),
     path('employees/add/', views.add_employee, name='add_employee'),
+    path('employee/add/', views.employee_form, name='employee_add'),
+    path('employee/create/', views.employee_form, name='employee_create'),
     path('employees/<int:pk>/', views.employee_detail, name='employee_detail'),
     path('employees/<int:pk>/edit/', views.edit_employee, name='edit_employee'),
+    path('employee/<int:pk>/edit/', views.edit_employee, name='employee_edit'),
     path('employees/<int:pk>/delete/', views.delete_employee, name='delete_employee'),
+    path('employee/<int:pk>/delete/', views.employee_delete, name='employee_delete'),
     path('employees/<int:pk>/performance/', views.employee_performance, name='employee_performance'),
     path('employees/<int:pk>/trainings/', views.employee_trainings, name='employee_trainings'),
     path('employees/<int:pk>/leave-history/', views.employee_leave_history, name='employee_leave_history'),
@@ -82,4 +75,17 @@ urlpatterns = [
 
     # Other URLs
     path('home/', views.home, name='home'),
+    path('', views.home, name='home'),
+    path('dashboard/', views.dashboard, name='dashboard'),
+    path('employees/', views.employee_list, name='employee_list'),
+    path('employees/add/', views.employee_form, name='employee_add'),
+    path('employees/<int:pk>/', views.employee_detail, name='employee_detail'),
+    path('employees/<int:pk>/edit/', views.employee_form, name='employee_edit'),
+    path('employees/<int:pk>/delete/', views.employee_delete, name='employee_delete'),
+    path('leave-requests/', views.leave_request_list, name='leave_request_list'),
+    path('leave-requests/create/', views.leave_request_form, name='leave_request_create'),
+    path('trainings/', views.training_list, name='training_list'),
+    path('trainings/create/', views.training_form, name='training_create'),
+    path('performance-reviews/', views.performance_review_list, name='performance_review_list'),
+    path('performance-reviews/create/', views.performance_review_form, name='performance_review_create'),
 ]
