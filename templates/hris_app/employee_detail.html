@@ -16,9 +16,9 @@
         <p class="card-text"><strong>Phone Number:</strong> {{ employee.phone_number }}</p>
         <p class="card-text"><strong>Emergency Contact:</strong> {{ employee.emergency_contact }}</p>
         <p class="card-text"><strong>Emergency Phone:</strong> {{ employee.emergency_phone }}</p>
-        <a href="{% url 'employee_update' employee.pk %}" class="btn btn-warning">Edit</a>
+        <a href="{% url 'employee_edit' employee.pk %}" class="btn btn-warning">Edit</a>
         <a href="{% url 'employee_delete' employee.pk %}" class="btn btn-danger">Delete</a>
         <a href="{% url 'employee_list' %}" class="btn btn-secondary">Back to List</a>
     </div>
 </div>
-{% endblock %} 
+{% endblock %}

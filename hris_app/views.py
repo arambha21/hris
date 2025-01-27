@@ -793,13 +793,6 @@ def payroll_update(request, pk):
     return render(request, 'hris_app/payroll_form.html', {'form': form})
 
 @login_required
-def payroll_delete(request, pk):
-    payroll = get_object_or_404(Payroll, pk=pk)
-    if request.method == 'POST':
-        payroll.delete()
-        return redirect('payroll_list')
-    return render(request, 'hris_app/payroll_confirm_delete.html', {'payroll': payroll})
-
 def payroll_list(request):
     payrolls = Payroll.objects.all()
     return render(request, 'hris_app/payroll_list.html', {'payrolls': payrolls})
@@ -961,3 +954,16 @@ def delete_department(request, pk):
         department.delete()
         return redirect('department_list')
     return render(request, 'hris_app/department_confirm_delete.html', {'department': department})
+
+def payroll_update(request, pk):
+    payroll = get_object_or_404(Payroll, pk=pk)
+    if request.method == 'POST':
+        form = PayrollForm(request.POST, instance=payroll)
+        if form.is_valid():
+            form.save()
+            return redirect('payroll_detail', pk=payroll.pk)
+    else:
+        form = PayrollForm(instance=payroll)
+    return render(request, 'hris_app/payroll_update.html', {'form': form, 'payroll': payroll})
+
+

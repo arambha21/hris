@@ -22,6 +22,8 @@ urlpatterns = [
     path('employees/<int:pk>/', views.employee_detail, name='employee_detail'),
     path('employees/<int:pk>/edit/', views.employee_form, name='employee_edit'),
     path('employees/<int:pk>/delete/', views.employee_delete, name='employee_delete'),
+    path('employees/<int:pk>/edit/', views.employee_form, name='employee_edit'),
+ 
 
     # Department related URLs
     path('departments/', views.department_list, name='department_list'),
@@ -71,9 +73,9 @@ urlpatterns = [
     path('payrolls/<int:pk>/delete/', views.delete_payroll, name='delete_payroll'),
     path('payroll-search/', views.payroll_search, name='payroll_search'),
     path('payrolls/create/', views.payroll_form, name='payroll_create'),
-    
+    path('payrolls/<int:pk>/update/', views.payroll_update, name='payroll_update'),
+    path('payrolls/<int:pk>/delete/', views.payroll_delete, name='payroll_delete'),
 
-    
     # Performance review related URLs
     path('performance-reviews/', views.performance_review_list, name='performance_review_list'),
     path('performance-reviews/add/', views.add_performance_review, name='add_performance_review'),
@@ -112,11 +114,5 @@ urlpatterns = [
 
     # Other URLs
     path('home/', views.home, name='home'),
-    path('', views.home, name='home'),
-    
-    
-    
-    
-    
-    
+    path('', views.home, name='home'),   
 ]
