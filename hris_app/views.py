@@ -4,8 +4,14 @@ from django.contrib import messages
 from django.utils import timezone
 from django.db.models import Count, Avg, Q
 from .models import Employee, Department, LeaveRequest, TrainingEvent, Payroll, PerformanceReview, EmployeeDocument, Attendance, Report
+from django.contrib.auth import logout
+from django.contrib.auth.views import LogoutView
 from .forms import LeaveRequestForm, EmployeeForm, DepartmentForm, EmployeeDocumentForm, TrainingEventForm, PerformanceReviewForm, PayrollForm,AttendanceForm, ReportForm
 
+@login_required
+def custom_logout(request):
+    logout(request)
+    return redirect('login')  # Redirect to your login page
 
 @login_required
 def dashboard(request):
