@@ -18,6 +18,10 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'employee_list' %}">Employees</a>
                     </li>
+                    <!-- Add this new list item for Reports -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'report_list' %}">Reports</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'department_list' %}">Departments</a>
                     </li>
@@ -33,36 +37,36 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'training_list' %}">Training</a>
                     </li>
-                </ul>
-                <ul class="navbar-nav ms-auto">
-                    {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'login' %}">Login</a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
+            </ul>
+            <ul class="navbar-nav ms-auto">
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Login</a>
+                    </li>
+                {% endif %}
+            </ul>
         </div>
-    </nav>
-
-    <div class="container mt-4">
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            {% endfor %}
-        {% endif %}
-
-        {% block content %}
-        {% endblock %}
     </div>
+</nav>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+<div class="container mt-4">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% block content %}
+    {% endblock %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+dy>
+ml>

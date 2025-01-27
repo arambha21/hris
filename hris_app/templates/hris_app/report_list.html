@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="mb-4">Reports</h1>
+
+<div class="card">
+    <div class="card-body">
+        {% if reports %}
+            <ul class="list-group">
+            {% for report in reports %}
+                <li class="list-group-item">
+                    <a href="{% url 'report_detail' report.pk %}">{{ report.title }}</a>
+                    <span class="text-muted">({{ report.report_type }})</span>
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>No reports available.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

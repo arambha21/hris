@@ -1,33 +1,51 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1 class="mb-4">HRIS Dashboard</h1>
+<h1 class="mb-4">Dashboard</h1>
 
 <div class="row">
-    <!-- Employee Overview -->
-    <div class="col-md-6 mb-4">
+    <!-- Key Metrics -->
+    <div class="col-md-4 mb-4">
         <div class="card">
-            <div class="card-header">
-                Employee Overview
-            </div>
+            <div class="card-header">Key Metrics</div>
             <div class="card-body">
-                <h5 class="card-title">Total Employees: {{ total_employees }}</h5>
-                <p class="card-text">Active: {{ active_employees }}</p>
-                <p class="card-text">On Leave: {{ employees_on_leave }}</p>
-                <a href="{% url 'employee_list' %}" class="btn btn-primary">View All Employees</a>
+                <p>Total Employees: {{ total_employees }}</p>
+                <p>Total Departments: {{ total_departments }}</p>
+                <p>Pending Leave Requests: {{ pending_leave_requests }}</p>
+                <p>Upcoming Trainings: {{ upcoming_trainings }}</p>
             </div>
         </div>
     </div>
 
-    <!-- Department Overview -->
-    <div class="col-md-6 mb-4">
+    <!-- Department-wise Employee Count -->
+    <div class="col-md-4 mb-4">
         <div class="card">
-            <div class="card-header">
-                Department Overview
-            </div>
+            <div class="card-header">Department-wise Employee Count</div>
             <div class="card-body">
-                <h5 class="card-title">Total Departments: {{ total_departments }}</h5>
-                <a href="{% url 'department_list' %}" class="btn btn-primary">View All Departments</a>
+                <ul class="list-unstyled">
+                    {% for dept in department_employee_count %}
+                    <li>{{ dept.name }}: {{ dept.employee_count }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Reports -->
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header">Recent Reports</div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    {% for report in recent_reports %}
+                    <li>
+                        <a href="{% url 'report_detail' report.pk %}">{{ report.title }}</a>
+                        <small class="text-muted d-block">{{ report.report_type }} - {{ report.created_at|date:"F d, Y" }}</small>
+                    </li>
+                    {% empty %}
+                    <li>No recent reports.</li>
+                    {% endfor %}
+                </ul>
             </div>
         </div>
     </div>
@@ -37,20 +55,18 @@
     <!-- Recent Leave Requests -->
     <div class="col-md-6 mb-4">
         <div class="card">
-            <div class="card-header">
-                Recent Leave Requests
-            </div>
+            <div class="card-header">Recent Leave Requests</div>
             <div class="card-body">
-                <ul class="list-group">
-                    {% for leave_request in recent_leave_requests %}
-                    <li class="list-group-item">
-                        {{ leave_request.employee.full_name }} - {{ leave_request.start_date|date:"M d, Y" }} to {{ leave_request.end_date|date:"M d, Y" }}
+                <ul class="list-unstyled">
+                    {% for leave in recent_leave_requests %}
+                    <li>
+                        {{ leave.employee.full_name }} - {{ leave.leave_type }}
+                        <small class="text-muted d-block">{{ leave.start_date|date:"F d, Y" }} to {{ leave.end_date|date:"F d, Y" }}</small>
                     </li>
                     {% empty %}
-                    <li class="list-group-item">No recent leave requests</li>
+                    <li>No recent leave requests.</li>
                     {% endfor %}
                 </ul>
-                <a href="{% url 'leave_request_list' %}" class="btn btn-primary mt-3">View All Leave Requests</a>
             </div>
         </div>
     </div>
@@ -58,34 +74,59 @@
     <!-- Upcoming Trainings -->
     <div class="col-md-6 mb-4">
         <div class="card">
-            <div class="card-header">
-                Upcoming Trainings
-            </div>
+            <div class="card-header">Upcoming Trainings</div>
             <div class="card-body">
-                <ul class="list-group">
-                    {% for training in upcoming_trainings %}
-                    <li class="list-group-item">
-                        {{ training.title }} - {{ training.start_date|date:"M d, Y" }}
+                <ul class="list-unstyled">
+                    {% for training in upcoming_trainings_list %}
+                    <li>
+                        {{ training.title }}
+                        <small class="text-muted d-block">{{ training.start_date|date:"F d, Y" }} - {{ training.participants.count }} participants</small>
                     </li>
                     {% empty %}
-                    <li class="list-group-item">No upcoming trainings</li>
+                    <li>No upcoming trainings.</li>
                     {% endfor %}
                 </ul>
-                <a href="{% url 'training_list' %}" class="btn btn-primary mt-3">View All Trainings</a>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Quick Actions -->
-<div class="row mt-4">
-    <div class="col-12">
-        <h2>Quick Actions</h2>
-        <div class="btn-group" role="group" aria-label="Quick Actions">
-            <a href="{% url 'employee_add' %}" class="btn btn-success">Add Employee</a>
-            <a href="{% url 'leave_request_create' %}" class="btn btn-info">Submit Leave Request</a>
-            <a href="{% url 'training_create' %}" class="btn btn-warning">Schedule Training</a>
-            <a href="{% url 'performance_review_create' %}" class="btn btn-danger">Create Performance Review</a>
+<div class="row">
+    <!-- Recent Performance Reviews -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">Recent Performance Reviews</div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    {% for review in recent_performance_reviews %}
+                    <li>
+                        {{ review.employee.full_name }} - {{ review.review_type }}
+                        <small class="text-muted d-block">Reviewed on: {{ review.review_date|date:"F d, Y" }}</small>
+                    </li>
+                    {% empty %}
+                    <li>No recent performance reviews.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Payroll Entries -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">Recent Payroll Entries</div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    {% for payroll in recent_payroll_entries %}
+                    <li>
+                        {{ payroll.employee.full_name }} - ${{ payroll.net_salary }}
+                        <small class="text-muted d-block">Pay period: {{ payroll.pay_period_start|date:"F d" }} - {{ payroll.pay_period_end|date:"F d, Y" }}</small>
+                    </li>
+                    {% empty %}
+                    <li>No recent payroll entries.</li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
     </div>
 </div>

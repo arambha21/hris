@@ -72,10 +72,12 @@
         <div class="col-md-3 mb-4">
             <div class="card bg-info text-white h-100">
                 <div class="card-body text-center">
-                    <i class="fas fa-chalkboard-teacher card-icon"></i>
-                    <h5 class="card-title">Upcoming Trainings</h5>
-                    <p class="card-text">{{ upcoming_trainings }}</p>
-                    <a href="{% url 'training_list' %}" class="btn btn-light">View Trainings</a>
+                    <h2>Upcoming Trainings</h2>
+                    <ul>
+                        {% for training in upcoming_trainings %}
+                        <li>{{ training.title }} - {{ training.start_date }}</li>
+                        {% endfor %}
+                    </ul>
                 </div>
             </div>
         </div>

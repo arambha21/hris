@@ -6,6 +6,27 @@
 <h1 class="mb-4">Payroll</h1>
 <a href="{% url 'payroll_create' %}" class="btn btn-primary mb-3">Create New Payroll Entry</a>
 <table class="table table-striped">
-  // redacted
+    <thead>
+        <tr>
+            <th>Employee</th>
+            <th>Period</th>
+            <th>Amount</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for payroll in payrolls %}
+        <tr>
+            <td>{{ payroll.employee }}</td>
+            <td>{{ payroll.period }}</td>
+            <td>{{ payroll.amount }}</td>
+            <td>
+                <a href="{% url 'payroll_detail' payroll.id %}" class="btn btn-sm btn-info">View</a>
+                <a href="{% url 'edit_payroll' payroll.id %}" class="btn btn-sm btn-warning">Edit</a>
+                <a href="{% url 'delete_payroll' payroll.id %}" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
 {% endblock %}

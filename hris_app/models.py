@@ -140,3 +140,22 @@ class EmployeeDocument(models.Model):
 
     def __str__(self):
         return f"{self.employee} - {self.document_type}"
+
+# Add other models (LeaveRequest, PerformanceReview, Payroll, Attendance, EmployeeDocument) here
+
+class Report(models.Model):
+    REPORT_TYPES = (
+        ('employee', 'Employee Report'),
+        ('department', 'Department Report'),
+        ('payroll', 'Payroll Report'),
+        # Add more report types as needed
+    )
+
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    report_type = models.CharField(max_length=20, choices=REPORT_TYPES)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title

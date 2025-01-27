@@ -3,8 +3,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
 from django.db.models import Count, Avg, Q
-from .models import Employee, Department, LeaveRequest, TrainingEvent, Payroll, PerformanceReview, EmployeeDocument, Attendance
-from .forms import LeaveRequestForm, EmployeeForm, DepartmentForm, EmployeeDocumentForm, TrainingEventForm, PerformanceReviewForm, PayrollForm,AttendanceForm
+from .models import Employee, Department, LeaveRequest, TrainingEvent, Payroll, PerformanceReview, EmployeeDocument, Attendance, Report
+from .forms import LeaveRequestForm, EmployeeForm, DepartmentForm, EmployeeDocumentForm, TrainingEventForm, PerformanceReviewForm, PayrollForm,AttendanceForm, ReportForm
+
 
 @login_required
 def dashboard(request):
@@ -14,7 +15,7 @@ def dashboard(request):
         'employees_on_leave': LeaveRequest.objects.filter(status='approved', end_date__gte=timezone.now().date()).count(),
         'total_departments': Department.objects.count(),
         'recent_leave_requests': LeaveRequest.objects.order_by('-created_at')[:5],
-        'upcoming_trainings': Training.objects.filter(start_date__gte=timezone.now().date()).order_by('start_date')[:5],
+        'upcoming_trainings': TrainingEvent.objects.filter(start_date__gte=timezone.now().date()).order_by('start_date')[:5],
     }
     return render(request, 'hris_app/dashboard.html', context)
 
@@ -62,6 +63,7 @@ def employee_delete(request, pk):
         messages.success(request, 'Employee deleted successfully.')
         return redirect('employee_list')
     return render(request, 'hris_app/employee_confirm_delete.html', {'employee': employee})
+@login_required
 def home(request):
     return render(request, 'hris_app/home.html')
 
@@ -797,3 +799,165 @@ def payroll_delete(request, pk):
         payroll.delete()
         return redirect('payroll_list')
     return render(request, 'hris_app/payroll_confirm_delete.html', {'payroll': payroll})
+
+def payroll_list(request):
+    payrolls = Payroll.objects.all()
+    return render(request, 'hris_app/payroll_list.html', {'payrolls': payrolls})
+
+@login_required
+def payroll_form(request):
+    if request.method == 'POST':
+        form = PayrollForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('payroll_list')
+    else:
+        form = PayrollForm()
+    return render(request, 'hris_app/payroll_form.html', {'form': form})
+
+@login_required
+def payroll_detail(request, pk):
+    payroll = get_object_or_404(Payroll, pk=pk)
+    return render(request, 'hris_app/payroll_detail.html', {'payroll': payroll})
+
+@login_required
+def payroll_update(request, pk):
+    payroll = get_object_or_404(Payroll, pk=pk)
+    if request.method == 'POST':
+        form = PayrollForm(request.POST, instance=payroll)
+        if form.is_valid():
+            form.save()
+            return redirect('payroll_list')
+    else:
+        form = PayrollForm(instance=payroll)
+    return render(request, 'hris_app/payroll_form.html', {'form': form})
+
+@login_required
+def payroll_delete(request, pk):
+    payroll = get_object_or_404(Payroll, pk=pk)
+    if request.method == 'POST':
+        payroll.delete()
+        return redirect('payroll_list')
+    return render(request, 'hris_app/payroll_confirm_delete.html', {'payroll': payroll})
+
+from django.shortcuts import render, redirect
+from .forms import PayrollForm  # Make sure to create this form
+
+@login_required
+def payroll_create(request):
+    if request.method == 'POST':
+        form = PayrollForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('payroll_list')
+    else:
+        form = PayrollForm()
+    return render(request, 'hris_app/payroll_form.html', {'form': form})
+
+@login_required
+def payroll_list(request):
+    payrolls = Payroll.objects.all()  # Make sure to import the Payroll model
+    return render(request, 'hris_app/payroll_list.html', {'payrolls': payrolls})
+
+@login_required
+def report_list(request):
+    # This is a placeholder. You'll need to customize this based on what kind of reports you want to show.
+    reports = []  # You might want to fetch actual report data here
+    return render(request, 'hris_app/report_list.html', {'reports': reports})
+
+@login_required
+def document_list(request):
+    documents = EmployeeDocument.objects.all()
+    return render(request, 'hris_app/document_list.html', {'documents': documents})
+
+
+@login_required
+def document_form(request):
+    if request.method == 'POST':
+        form = EmployeeDocumentForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Document added successfully.')
+            return redirect('document_list')
+    else:
+        form = EmployeeDocumentForm()
+    return render(request, 'hris_app/document_form.html', {'form': form})
+
+@login_required
+def edit_document(request, pk):
+    document = get_object_or_404(EmployeeDocument, pk=pk)
+    if request.method == 'POST':
+        form = EmployeeDocumentForm(request.POST, request.FILES, instance=document)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Document updated successfully.')
+            return redirect('document_list')
+    else:
+        form = EmployeeDocumentForm(instance=document)
+    return render(request, 'hris_app/document_form.html', {'form': form, 'document': document})
+
+@login_required
+def delete_document(request, pk):
+    document = get_object_or_404(EmployeeDocument, pk=pk)
+    if request.method == 'POST':
+        document.delete()
+        messages.success(request, 'Document deleted successfully.')
+        return redirect('document_list')
+    return render(request, 'hris_app/document_confirm_delete.html', {'document': document})
+    
+@login_required
+def report_form(request):
+    if request.method == 'POST':
+        form = ReportForm(request.POST)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.created_by = request.user
+            report.save()
+            messages.success(request, 'Report created successfully.')
+            return redirect('report_list')  # Assuming you have a report list view
+    else:
+        form = ReportForm()
+    return render(request, 'hris_app/report_form.html', {'form': form})
+
+@login_required
+def delete_report(request, pk):
+    report = get_object_or_404(Report, pk=pk)
+    if request.method == 'POST':
+        report.delete()
+        messages.success(request, 'Report deleted successfully.')
+        return redirect('report_list')  # Assuming you have a report list view
+    return render(request, 'hris_app/report_confirm_delete.html', {'report': report})
+
+@login_required
+def edit_report(request, pk):
+    report = get_object_or_404(Report, pk=pk)
+    if request.method == 'POST':
+        form = ReportForm(request.POST, instance=report)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Report updated successfully.')
+            return redirect('report_list')  # Assuming you have a report list view
+    else:
+        form = ReportForm(instance=report)
+    return render(request, 'hris_app/report_form.html', {'form': form, 'report': report})
+
+
+@login_required
+def department_update(request, pk):
+    department = get_object_or_404(Department, pk=pk)
+    if request.method == 'POST':
+        form = DepartmentForm(request.POST, instance=department)
+        if form.is_valid():
+            form.save()
+            return redirect('department_detail', pk=department.pk)
+    else:
+        form = DepartmentForm(instance=department)
+    return render(request, 'hris_app/department_form.html', {'form': form, 'department': department})
+
+@login_required
+def delete_department(request, pk):
+    department = get_object_or_404(Department, pk=pk)
+    if request.method == 'POST':
+        department.delete()
+        return redirect('department_list')
+    return render(request, 'hris_app/department_confirm_delete.html', {'department': department})

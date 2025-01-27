@@ -1,5 +1,5 @@
 from django import forms
-from .models import Employee, Department, LeaveRequest, TrainingEvent, PerformanceReview, Payroll, Attendance, EmployeeDocument
+from .models import Employee, Department, LeaveRequest, TrainingEvent, PerformanceReview, Payroll, Attendance, EmployeeDocument, Report
 
 class EmployeeForm(forms.ModelForm):
     class Meta:
@@ -41,3 +41,11 @@ class EmployeeDocumentForm(forms.ModelForm):
     class Meta:
         model = EmployeeDocument
         fields = ['employee', 'document_type', 'file']
+
+from django import forms
+from .models import Report  # Assuming you have a Report model
+
+class ReportForm(forms.ModelForm):
+    class Meta:
+        model = Report
+        fields = ['title', 'description', 'report_type']  # Adjust fields as per your Report model
